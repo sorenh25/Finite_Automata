@@ -1,14 +1,17 @@
-M2: Simple Palindrome with trapping
-a,b,c
+M1:DFA from Fig. 1.44 
 a,b
-A,F,T
-A
-F
-A,a,~|A,a
-A,b,~|A,b
-A,c,~|F,~
-F,a,a|F,~
-F,b,b|F,~
-F,c,~|T,~
-F,a,b|T,~
-F,b,a|T,~
+q,q2,q3,q13,q23,q123
+q13
+q13,q123
+q,a,q
+q,b,q
+q2,a,q23
+q2,b,q3
+q3,a,q13
+q3,b,q
+q13,a,q13
+q13,b,q2
+q23,a,q123
+q23,b,q3
+q123,a,q123
+q123,b,q23

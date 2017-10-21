@@ -10,6 +10,7 @@ using namespace std;
 int main(int argc, char** argv) {
   FA myFA(argv[1], argv[2]);
   myFA.readFA();
+  myFA.runInput();
 
 }
 

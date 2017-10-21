@@ -1,5 +1,8 @@
-abba
-acb
-ca
-bbcba
-baccab
+ba
+bb
+bbbb
+babbbab
+bab
+baaab
+bbb
+baaabbbbbbbbabbaabbaaab

@@ -1,18 +1,13 @@
-M3:Equal as and bs', with a final $ 
-a,b,$
-a,b,$
-S,Q,Qa,Qb,Q$a,Q$b,F
-S
-F
-S,~,~|Q,$
-Q,a,$|Q$a,$
-Q$a,~,~|Q,a
-Q,a,a|Qa,a
-Qa,~,~|Q,a
-Q,a,b|Q,~
-Q,b,$|Q$b,$
-Q$b,~,~|Q,b
-Q,b,a|Q,~
-Q,b,b|Qb,b
-Qb,~,~|Q,b
-Q,$,$|F,~
+M3:DFA from Hopcroft p 50 
+0,1
+q0,q1,q2,q3
+q0
+q0
+q0,1,q1
+q0,0,q2
+q1,1,q0
+q1,0,q3
+q2,1,q3
+q2,0,q0
+q3,1,q2
+q3,0,q1

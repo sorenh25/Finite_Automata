@@ -1,6 +1,7 @@
-c
-aca
-abcba
-aabbcbbaa
-abaabbcbbaaba
-ac
+a
+baa
+baba
+ababa
+aaabbaaa
+ababaaa
+ababaabaabaaa
