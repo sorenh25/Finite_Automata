@@ -29,7 +29,10 @@ void FA::readFA() {
   getline(FAFile,line,'\n');
 
   //this block read in the alphabet
-  for (unsigned int i = 0; i < line.length() - 1; i++) { //so that the \n character is not part of the alphabet. Confirmed!
+  if (line[line.length() - 1] == '\r') {
+    line.pop_back();
+  }
+  for (unsigned int i = 0; i < line.length(); i++) { //Confirmed!
     if (line[i] == ',') {
       continue;
     }
@@ -39,7 +42,9 @@ void FA::readFA() {
   }
   //This block reads in the states. Confirmed!
   getline(FAFile, line);
-  //cout << line << endl;
+  if (line[line.length() - 1] == '\r') {
+    line.pop_back();
+  }
   size_t pos1 = 0;
   size_t pos2 = line.find_first_of(',', pos1);
   while(pos2 != string::npos) {
@@ -47,16 +52,20 @@ void FA::readFA() {
     pos1 = pos2 + 1;
     pos2 = line.find_first_of(',',pos1);
   }
-  line = line.substr(pos1, pos2);
-  line.pop_back();
+  line = line.substr(pos1, line.length() - pos1);
+  //line.pop_back();
   states.push_back(line);
 
   getline(FAFile, startState); //read startState. Confirmed
-  startState.pop_back();
+  if (startState[startState.length() - 1] == '\r') {
+    startState.pop_back();
+  }
 
   //Gets the accepting states. Should work same way as read states.
   getline(FAFile, line);
-  //cout << line << endl;
+  if (line[line.length() - 1] == '\r') {
+    line.pop_back();
+  }
   pos1 = 0;
   pos2 = line.find_first_of(',', pos1);
   while(pos2 != string::npos) {
@@ -64,16 +73,16 @@ void FA::readFA() {
     pos1 = pos2 + 1;
     pos2 = line.find_first_of(',',pos1);
   }
-  line = line.substr(pos1, pos2);
-  line.pop_back();
+  line = line.substr(pos1, line.length() - pos1);
+  //line.pop_back();
   endStates[line] = true;;
 
   string beginState, destinationState;
   char inputCharacter;
-  getline(FAFile, line);
+  //getline(FAFile, line);
   int ruleNumber = 0;
   while(!FAFile.eof()) {
-
+    getline(FAFile, line);
     if (line.empty()) {
       cout << "Read in an empty line, something is wrong" << endl;
       break;
@@ -90,7 +99,7 @@ void FA::readFA() {
 
     transitionFunction[make_pair(beginState,inputCharacter)] = make_pair(destinationState, ruleNumber);
 
-    getline(FAFile, line);
+    //getline(FAFile, line);
     ruleNumber++;
     /*
     cout << "Begin: " << beginState << endl;
@@ -101,6 +110,7 @@ void FA::readFA() {
     */
 
   }
+
 
   FAFile.close();
 
@@ -150,7 +160,11 @@ void FA::testInputString() {
       destinationPair = transitionFunction.at(make_pair(currentState,inputString[i]));
     }
     catch (const out_of_range& oor) {
-      cout << "rejecta" << endl;
+      cout << "reject" << endl;
+      //cout << "Input: " << inputString[i] << endl;
+      //cout << "current State: " << currentState << " (" << currentState.length() << ')' << endl;
+      //cout << destinationPair.first << " " << destinationPair.first.length() << endl;
+
       //cerr << "Transition function does not contain given input, state combination: " << currentState << inputString[i] << endl;
       //cerr << oor.what() << endl;
       return;
@@ -163,7 +177,7 @@ void FA::testInputString() {
     endStates.at(currentState);
   }
   catch (const out_of_range& oor) {
-    cout << "rejectb" << endl;
+    cout << "reject" << endl;
     return;
   }
   cout << "accept" << endl;
@@ -227,6 +241,11 @@ void FA::printFA() {
     cout << it->first << ' ';
   }
   cout << '(' << k << ')' << endl;
+
+  cout << "Rules:" << endl;
+  for (unsigned int i = 0; i < rules.size(); i++) {
+    cout << rules[i] << endl;
+  }
 
   cout << "####################" << endl;
 
