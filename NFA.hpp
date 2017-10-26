@@ -11,6 +11,8 @@ public:
   void readNFA();
   void createTransitionFunction(std::string, char, std::string);
   bool inVector(std::string, std::vector<std::string>&);
+
+  void findEpsilon();
   //void runInput();
   //bool readInputString(std::ifstream& InputFile);
   //void testInputString();
@@ -38,6 +40,6 @@ private:
   std::map<std::string, bool> endStates; //use at() operator to avoid default behaviour of []. at returns std::out_of_range is key is not found
 
   std::map<std::pair<std::string, char>, std::vector<std::string>> transitionFunction;
-
+  std::map<std::string, std::vector<std::string>> epsilon;
 
 };

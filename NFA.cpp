@@ -1,6 +1,7 @@
 #include "NFA.hpp"
-#include "iostream"
-#include "stdexcept"
+#include <iostream>
+#include <stdexcept>
+#include <algorithm>
 
 using namespace std;
 
@@ -125,13 +126,13 @@ void NFA::createTransitionFunction(string beginState, char inputCharacter, strin
   //  tra
   //}
   try {
-    //vector<string> destinations = transitionFunction.at(make_pair(beginState, inputCharacter));
-    if (inVector(destinationState, transitionFunction.at(make_pair(beginState, inputCharacter)))) {
+    vector<string>& destinations = transitionFunction.at(make_pair(beginState, inputCharacter));
+    if (inVector(destinationState, destinations)) {
       cout << "@@@" << beginState << ' ' << inputCharacter << ' ' << destinationState << endl;
       return;
     }
-    //destinations.push_back(destinationState);
-    transitionFunction.at(make_pair(beginState, inputCharacter)).push_back(destinationState);
+    destinations.push_back(destinationState);
+    //transitionFunction.at(make_pair(beginState, inputCharacter)).push_back(destinationState);
 
 
   }
@@ -184,6 +185,16 @@ void NFA::printNFA() {
     }
   }
 
+  cout << "Epsilon: " << endl;
+  for (unsigned int i = 0; i < states.size(); i++) {
+    cout << "E(" << states[i] << ") = {";
+    vector<string> eps = epsilon[states[i]];
+    for (unsigned int j = 0; j < eps.size(); j++) {
+      cout << eps[j];
+    }
+    cout << '}' << endl;
+  }
+
   //map<std::pair<std::string, char>, std::vector<std::string>>::iterator itr;
   //itr = transitionFunction.begin();
 
@@ -214,4 +225,41 @@ void NFA::printVector(vector<string>& vec) {
     cout << vec[i] << ' ';
   }
   cout << endl;
+}
+
+
+void NFA::findEpsilon() {
+  vector<string> destinations;
+  //vector<string>& eps = destinations; //just because I can't inistantiate a reference without initializing it
+  for (unsigned int i = 0; i < states.size(); i++) {
+
+    try {
+      destinations = transitionFunction.at(make_pair(states[i],'~'));
+    }
+    catch (const out_of_range& oor) {
+      epsilon[states[i]].push_back(states[i]);
+      continue;
+    }
+    vector<string>& eps = epsilon[states[i]];
+    eps.push_back(states[i]);
+    for (unsigned int j = 0; j < destinations.size(); j++) {
+      if (inVector(destinations[j], eps)) {
+        continue;
+      }
+      eps.push_back(destinations[j]);
+    }
+  }
+
+  for (unsigned int i = 0; i < states.size(); i++) {
+    vector<string>& eps = epsilon[states[i]];
+    for (unsigned int j = 1; j < eps.size(); j++) {
+      destinations = epsilon[eps[j]];
+      for (unsigned k = 1; k < destinations.size(); k++) {
+        if (!inVector(destinations[k],eps)) {
+          eps.push_back(destinations[k]);
+        }
+      }
+      sort(eps.begin(), eps.end());
+    }
+  }
 }
