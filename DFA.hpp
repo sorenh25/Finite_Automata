@@ -5,11 +5,11 @@
 #include <vector>
 #include <fstream>
 
-class FA {
+class DFA {
 public:
-  FA(std::string, std::string);
-  ~FA();
-  void readFA();
+  DFA(std::string, std::string);
+  ~DFA();
+  void readDFA();
   void runInput();
   bool readInputString(std::ifstream& InputFile);
   void testInputString();
@@ -17,7 +17,8 @@ public:
   bool validInput();
   bool isAcceptState();
 
-  void printFA();
+  void printDFA();
+
 
 //private:
   std::string FAFileName;

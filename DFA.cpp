@@ -6,16 +6,16 @@
 
 using namespace std;
 
-FA::FA(string FA, string input) {
+DFA::DFA(string FA, string input) {
   FAFileName = FA;
   inputFileName = input;
 }
 
-FA::~FA() {
+DFA::~DFA() {
 
 }
 
-void FA::readFA() {
+void DFA::readDFA() {
 
   ifstream FAFile;
   FAFile.open(FAFileName.c_str());
@@ -79,7 +79,7 @@ void FA::readFA() {
 
   string beginState, destinationState;
   char inputCharacter;
-  //getline(FAFile, line);
+
   int ruleNumber = 0;
   while(!FAFile.eof()) {
     getline(FAFile, line);
@@ -98,8 +98,6 @@ void FA::readFA() {
     destinationState = line.substr(pos2 + 3, line.length());
 
     transitionFunction[make_pair(beginState,inputCharacter)] = make_pair(destinationState, ruleNumber);
-
-    //getline(FAFile, line);
     ruleNumber++;
     /*
     cout << "Begin: " << beginState << endl;
@@ -116,13 +114,13 @@ void FA::readFA() {
 
 }
 
-void FA::runInput() {
+void DFA::runInput() {
   ifstream InputFile;
   InputFile.open(inputFileName.c_str());
   if (!InputFile.is_open()) {
     cerr << "InputFile file could not be opened" << endl;
   }
-  printFA();
+  printDFA();
 
   while(readInputString(InputFile)) {
     testInputString();
@@ -132,7 +130,7 @@ void FA::runInput() {
   InputFile.close();
 }
 
-bool FA::readInputString(ifstream& InputFile) {
+bool DFA::readInputString(ifstream& InputFile) {
   if (InputFile.eof()) {
     return false;
   }
@@ -148,7 +146,7 @@ bool FA::readInputString(ifstream& InputFile) {
   return true;
 }
 
-void FA::testInputString() {
+void DFA::testInputString() {
   currentState = startState;
   if (!validInput()) {
     cerr << "Input given not valid" << endl;
@@ -189,7 +187,7 @@ void FA::testInputString() {
 
 }
 
-bool FA::validInput() {
+bool DFA::validInput() {
   alphabet.shrink_to_fit();
   /*
   for (unsigned int i = 0; i < alphabet.size(); i++) {
@@ -211,11 +209,11 @@ bool FA::validInput() {
   return true;
 }
 
-bool FA::isAcceptState() {
+bool DFA::isAcceptState() {
   return true;
 }
 
-void FA::printFA() {
+void DFA::printDFA() {
   cout << "####################" << endl;
   cout << nameOfFA << endl;
 
