@@ -72,13 +72,15 @@ void NFA::readNFA() {
   pos1 = 0;
   pos2 = line.find_first_of(',', pos1);
   while(pos2 != string::npos) {
-    NFAEndStates[line.substr(pos1,pos2 - pos1)] = true;
+    endStates[line.substr(pos1,pos2 - pos1)] = true;
+    NFAEndStates.push_back(line.substr(pos1,pos2 - pos1));
     pos1 = pos2 + 1;
     pos2 = line.find_first_of(',',pos1);
   }
   line = line.substr(pos1, line.length() - pos1);
   //line.pop_back();
-  NFAEndStates[line] = true;;
+  endStates[line] = true;
+  NFAEndStates.push_back(line);
 
   string beginState, destinationState;
   char inputCharacter;
@@ -87,7 +89,7 @@ void NFA::readNFA() {
   while(!FAFile.eof()) {
     getline(FAFile, line);
     if (line.empty()) {
-      cout << "Read in an empty line, something is wrong" << endl;
+      //cout << "Read in an empty line, something is wrong" << endl;
       break;
     }
     if (line[line.length() - 1] == '\r') {
@@ -161,13 +163,21 @@ void NFA::printNFA() {
   cout << "Start state: " << startState << endl;
 
   cout << "Accept NFAStates: ";
-  map<std::string, bool>::iterator it = NFAEndStates.begin();
+  /*map<std::string, bool>::iterator it = NFAEndStates.begin();
   int k = 0;
   for ( ; it != NFAEndStates.end(); it++) {
     k++;
     cout << it->first << ' ';
+  }*/
+
+  for (unsigned int i = 0; i < DFAEndStates.size(); i++) {
+    if (i != 0) {
+      cout << ',';
+    }
+    cout << '{' << DFAEndStates[i] << '}';
   }
-  cout << '(' << k << ')' << endl;
+  cout << endl;
+  //cout << '(' << k << ')' << endl;
 
   for (unsigned int i = 0; i < NFAStates.size(); i++) {
     for (unsigned int j = 0; j < alphabet.size(); j++) {
@@ -266,17 +276,30 @@ void NFA::findEpsilon() {
 }
 
 void NFA::convertToDFA() {
+  findEpsilon();
   vector<string> startStates;
   vector<string> destinationStates = epsilon[startState];
   string str = returnString(destinationStates);
   DFAStates.push_back(str);
 
   for (unsigned int i = 0; i < DFAStates.size(); i++) {
+    if (DFAStates[i] == "TrapState") {
+      continue;
+    }
     startStates = returnStateVector(DFAStates[i]);
     findDestinations(startStates);
-
-
   }
+
+  findEndStates();
+  if (inVector("TrapState", DFAStates)) {
+    for (unsigned int i = 0; i < alphabet.size(); i++) {
+      if (alphabet[i] == '~') {
+        continue;
+      }
+      DFATransitionFunction[make_pair("TrapState", alphabet[i])] = "TrapState";
+    }
+  }
+
 }
 
 string NFA::returnString(vector<string>& vec) {
@@ -329,18 +352,21 @@ void NFA::findDestinations(vector<string> vec) {
       }
     }
     if (destinationStates.empty()) {
-      //destinationStates.push_back("TrapState");
       DFATransitionFunction[make_pair(returnString(vec), alphabet[i])] = "TrapState";
+      if (!inVector("TrapState", DFAStates)) {
+        DFAStates.push_back("TrapState");
+      }
       continue;
     }
     for (unsigned int k = 0; k < destinationStates.size(); k++) {
       copyIntoVector(destinationStates, epsilon[destinationStates[i]]);
     }
-    string str = returnString(destinationStates);
-    if (!inVector(str, DFAStates)) {
-      DFAStates.push_back(str);
+
+    string desStateStr = returnString(destinationStates);
+    if (!inVector(desStateStr, DFAStates)) {
+      DFAStates.push_back(desStateStr);
     }
-    DFATransitionFunction[make_pair(returnString(vec), alphabet[i])] = str;
+    DFATransitionFunction[make_pair(returnString(vec), alphabet[i])] = desStateStr;
   }
 }
 
@@ -370,12 +396,19 @@ void NFA::writeDFA() {
   }
   DFAFile << endl;
 
-  DFAFile << returnString(epsilon[startState]) << endl;
-  DFAFile << "Yet to find accept states" << endl;
+  DFAFile << '{' << returnString(epsilon[startState]) << '}' << endl;
+
+  sort(DFAEndStates.begin(), DFAEndStates.end());
+  for (unsigned int i = 0; i < DFAEndStates.size(); i++) {
+    if (i != 0) {
+      DFAFile << ',';
+    }
+    DFAFile << '{' << DFAEndStates[i] << '}';
+  }
+  DFAFile << endl;
 
 
   string dstate;
-  //char input;
   sort(DFAStates.begin(), DFAStates.end());
 
   for (unsigned int i = 0; i < DFAStates.size(); i++) {
@@ -392,4 +425,45 @@ void NFA::writeDFA() {
       DFAFile << '{' << DFAStates[i] << "}," << alphabet[j] << ",{" << dstate << '}' <<endl;
     }
   }
+}
+
+void NFA::findEndStates() {
+
+
+  for (unsigned int i = 0; i < DFAStates.size(); i++) {
+    if (DFAStates[i] == "TrapState") {
+      continue;
+    }
+    //bool endState = false;
+    vector<string> states = returnStateVector(DFAStates[i]);
+    for (unsigned int j = 0; j < NFAEndStates.size(); j++) {
+      if (inVector(NFAEndStates[j], states)) {
+        DFAEndStates.push_back(DFAStates[i]);
+        break;
+      }
+    }
+  }
+    //bool endstate = false;
+
+
+
+
+/*
+  for (unsigned int k = 0; k < destinationStates.size(); k++) {
+    try {
+      endstate = NFAEndStates.at(destinationStates[k]);
+    }
+    catch (const out_of_range oor) {
+      continue;
+    }
+    if (endstate) {
+      if (!inVector(desStateStr, DFAEndStates)) {
+        DFAEndStates.push_back(desStateStr);
+      }
+      break;
+    }
+
+  }
+  */
+
 }

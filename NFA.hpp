@@ -30,6 +30,7 @@ public:
   void convertToDFA();
   void findEpsilon();
   void findDestinations(std::vector<std::string>);
+  void findEndStates();
 
   void writeDFA();
 
@@ -47,12 +48,14 @@ private:
   std::vector<std::string> NFAStates;
   std::vector<std::string> rules;
   std::string startState;
-  std::map<std::string, bool> NFAEndStates; //use at() operator to avoid default behaviour of []. at returns std::out_of_range is key is not found
+  std::map<std::string, bool> endStates; //use at() operator to avoid default behaviour of []. at returns std::out_of_range is key is not found
+  std::vector<std::string> NFAEndStates;
 
   std::map<std::pair<std::string, char>, std::vector<std::string>> transitionFunction;
   std::map<std::string, std::vector<std::string>> epsilon;
 
   std::vector<std::string> DFAStates;
+  std::vector<std::string> DFAEndStates;
   std::map<std::pair<std::string, char>, std::string> DFATransitionFunction;
 
 };
