@@ -9,5 +9,7 @@ int main(int argc, char** argv) {
   myFA.readNFA();
   myFA.findEpsilon();
   myFA.printNFA();
+  myFA.convertToDFA();
+  myFA.writeDFA();
 
 }
