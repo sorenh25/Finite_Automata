@@ -84,7 +84,7 @@ void DFA::readDFA() {
   while(!FAFile.eof()) {
     getline(FAFile, line);
     if (line.empty()) {
-      cout << "Read in an empty line, something is wrong" << endl;
+      //cout << "Read in an empty line, something is wrong" << endl;
       break;
     }
     if (line[line.length() - 1] == '\r') {
@@ -121,7 +121,7 @@ void DFA::runInput() {
     cerr << "InputFile file could not be opened" << endl;
   }
   printDFA();
-
+  
   while(readInputString(InputFile)) {
     testInputString();
   }
@@ -148,17 +148,20 @@ bool DFA::readInputString(ifstream& InputFile) {
 
 void DFA::testInputString() {
   currentState = startState;
+  /*
   if (!validInput()) {
     cerr << "Input given not valid" << endl;
     return;
   }
+  */
+  cout << "String: " << inputString << endl;
   pair<string, int> destinationPair;
   for (unsigned int i = 0; i < inputString.length(); i++) {
     try {
       destinationPair = transitionFunction.at(make_pair(currentState,inputString[i]));
     }
     catch (const out_of_range& oor) {
-      cout << "reject" << endl;
+      cout << "Rejecteda" << ' ' << i << endl;
       //cout << "Input: " << inputString[i] << endl;
       //cout << "current State: " << currentState << " (" << currentState.length() << ')' << endl;
       //cout << destinationPair.first << " " << destinationPair.first.length() << endl;
@@ -167,7 +170,7 @@ void DFA::testInputString() {
       //cerr << oor.what() << endl;
       return;
     }
-    cout << "Rule " << destinationPair.second << ':' << rules[destinationPair.second] << endl;
+    cout << i + 1 << ',' << destinationPair.second << ',' << rules[destinationPair.second] << endl;
     currentState = destinationPair.first;
   }
 
@@ -175,10 +178,10 @@ void DFA::testInputString() {
     endStates.at(currentState);
   }
   catch (const out_of_range& oor) {
-    cout << "reject" << endl;
+    cout << "Rejectedb" << endl;
     return;
   }
-  cout << "accept" << endl;
+  cout << "Accepted" << endl;
 
 
 
