@@ -1,3 +1,4 @@
+//Implementation of the DFA class.
 #include "DFA.hpp"
 #include "string"
 #include "iostream"
@@ -15,6 +16,7 @@ DFA::~DFA() {
 
 }
 
+//Function to read in DFA from file and read into data structures
 void DFA::readDFA() {
 
   ifstream FAFile;
@@ -114,14 +116,15 @@ void DFA::readDFA() {
 
 }
 
+//This function is to be called after DFA is read. The function will cause all the strins in the testfile to be processed
 void DFA::runInput() {
   ifstream InputFile;
   InputFile.open(inputFileName.c_str());
   if (!InputFile.is_open()) {
     cerr << "InputFile file could not be opened" << endl;
   }
-  printDFA();
-  
+  //printDFA();
+
   while(readInputString(InputFile)) {
     testInputString();
   }
@@ -130,6 +133,7 @@ void DFA::runInput() {
   InputFile.close();
 }
 
+//reads input string from testfile
 bool DFA::readInputString(ifstream& InputFile) {
   if (InputFile.eof()) {
     return false;
@@ -146,6 +150,7 @@ bool DFA::readInputString(ifstream& InputFile) {
   return true;
 }
 
+//Function runs a single input string aginst the DFA
 void DFA::testInputString() {
   currentState = startState;
   /*
@@ -161,13 +166,9 @@ void DFA::testInputString() {
       destinationPair = transitionFunction.at(make_pair(currentState,inputString[i]));
     }
     catch (const out_of_range& oor) {
-      cout << "Rejecteda" << ' ' << i << endl;
-      //cout << "Input: " << inputString[i] << endl;
-      //cout << "current State: " << currentState << " (" << currentState.length() << ')' << endl;
-      //cout << destinationPair.first << " " << destinationPair.first.length() << endl;
+      //if the transition is not in the transition function it will fail here
+      cout << "Rejected" << endl;
 
-      //cerr << "Transition function does not contain given input, state combination: " << currentState << inputString[i] << endl;
-      //cerr << oor.what() << endl;
       return;
     }
     cout << i + 1 << ',' << destinationPair.second << ',' << rules[destinationPair.second] << endl;
@@ -178,9 +179,11 @@ void DFA::testInputString() {
     endStates.at(currentState);
   }
   catch (const out_of_range& oor) {
-    cout << "Rejectedb" << endl;
+    //if we end up not in the endstate it gets rejected here
+    cout << "Rejected" << endl;
     return;
   }
+  //otherwise the string is accepted here
   cout << "Accepted" << endl;
 
 
@@ -190,15 +193,9 @@ void DFA::testInputString() {
 
 }
 
+//function checks whether all the characters un input string are in alphabet
 bool DFA::validInput() {
   alphabet.shrink_to_fit();
-  /*
-  for (unsigned int i = 0; i < alphabet.size(); i++) {
-    cout << alphabet[i] << ' ';
-  }
-  cout << "Done" << endl;
-  */
-
   for (unsigned int i = 0; i < inputString.length(); i++) {
     for (unsigned int j = 0; j < alphabet.size(); j++) {
       if (inputString[i] == alphabet[j]) {
@@ -212,10 +209,12 @@ bool DFA::validInput() {
   return true;
 }
 
+//Function not used
 bool DFA::isAcceptState() {
   return true;
 }
 
+//helper function to print DFA
 void DFA::printDFA() {
   cout << "####################" << endl;
   cout << nameOfFA << endl;

@@ -1,3 +1,4 @@
+//implementation of nfa-dfa
 #include "NFA.hpp"
 #include <iostream>
 #include <stdexcept>
@@ -15,9 +16,8 @@ NFA::~NFA() {
 }
 
 
-
+//function reads the nfa from the testfile and stores the information in internal data structures
 void NFA::readNFA() {
-
   ifstream FAFile;
   FAFile.open(FAFileName.c_str());
   if (!FAFile.is_open()) {
@@ -102,31 +102,16 @@ void NFA::readNFA() {
     inputCharacter = line[pos2 + 1];
     destinationState = line.substr(pos2 + 3, line.length());
 
-
     createTransitionFunction(beginState, inputCharacter, destinationState);
-    //transitionFunction[make_pair(beginState,inputCharacter)] = make_pair(destinationState, ruleNumber);
-    //ruleNumber++;
-    /*
-    cout << "Begin: " << beginState << endl;
-    cout << "Input: " << inputCharacter << endl;
-    cout << "Destination: " << destinationState << endl;
-    cout << "Line length: " << line.length() - 2 << endl; //minus 2 because of the commas
-    cout << endl;
-    */
 
   }
-
 
   FAFile.close();
 
 }
 
+//pass information of a rule to this function to add the rule to the nfa transitionFunction
 void NFA::createTransitionFunction(string beginState, char inputCharacter, string destinationState) {
-  //map<std::pair<std::string, char>, std::vector<std::string>>::iterator itr;
-  //itr = transitionFunction.find(make_pair(beginState, inputCharacter));
-  //if (itr != transitionFunction.end()) {
-  //  tra
-  //}
   try {
     vector<string>& destinations = transitionFunction.at(make_pair(beginState, inputCharacter));
     if (inVector(destinationState, destinations)) {
@@ -135,8 +120,6 @@ void NFA::createTransitionFunction(string beginState, char inputCharacter, strin
     }
     destinations.push_back(destinationState);
     //transitionFunction.at(make_pair(beginState, inputCharacter)).push_back(destinationState);
-
-
   }
   catch (const out_of_range& oor) {
     transitionFunction[make_pair(beginState, inputCharacter)].push_back(destinationState);
@@ -144,6 +127,7 @@ void NFA::createTransitionFunction(string beginState, char inputCharacter, strin
 
 }
 
+//helper function prints the NFA
 void NFA::printNFA() {
   cout << "####################" << endl;
   cout << nameOfFA << endl;
@@ -163,12 +147,6 @@ void NFA::printNFA() {
   cout << "Start state: " << startState << endl;
 
   cout << "Accept NFAStates: ";
-  /*map<std::string, bool>::iterator it = NFAEndStates.begin();
-  int k = 0;
-  for ( ; it != NFAEndStates.end(); it++) {
-    k++;
-    cout << it->first << ' ';
-  }*/
 
   for (unsigned int i = 0; i < DFAEndStates.size(); i++) {
     if (i != 0) {
@@ -221,6 +199,7 @@ void NFA::printNFA() {
 
 }
 
+//function tests whether a state is in a vector of states
 bool NFA::inVector(string key, vector<string>& val) {
   for (unsigned int i = 0; i < val.size(); i++) {
     if (key == val[i]) {
@@ -230,6 +209,7 @@ bool NFA::inVector(string key, vector<string>& val) {
   return false;
 }
 
+//helper function to print vector
 void NFA::printVector(vector<string>& vec) {
   for (unsigned int i = 0; i < vec.size(); i++) {
     cout << vec[i] << ' ';
@@ -237,10 +217,9 @@ void NFA::printVector(vector<string>& vec) {
   cout << endl;
 }
 
-
+//Function to find where you can go from a specific state along epsilons. Results stored in epsilon map
 void NFA::findEpsilon() {
   vector<string> destinations;
-  //vector<string>& eps = destinations; //just because I can't inistantiate a reference without initializing it
   for (unsigned int i = 0; i < NFAStates.size(); i++) {
 
     try {
@@ -275,8 +254,10 @@ void NFA::findEpsilon() {
   }
 }
 
+//Function to call to convert nfa to dfa
 void NFA::convertToDFA() {
   findEpsilon();
+
   vector<string> startStates;
   vector<string> destinationStates = epsilon[startState];
   string str = returnString(destinationStates);
@@ -302,15 +283,17 @@ void NFA::convertToDFA() {
 
 }
 
+//function used to turn a vector of states into a single string which represents a single state.
 string NFA::returnString(vector<string>& vec) {
   sort(vec.begin(), vec.end());
   string str = vec[0];
   for (unsigned int i = 1; i < vec.size(); i++) {
-    str += ',' + vec[i];
+    str += ';' + vec[i];
   }
   return str;
 }
 
+//function copies elements from newVec into oldVec if they are not already in oldVec
 void NFA::copyIntoVector(vector<string>& oldVec, vector<string>& newVec) {
   for (unsigned int i = 0; i < newVec.size(); i++) {
     if (!inVector(newVec[i], oldVec)) {
@@ -325,11 +308,11 @@ vector<string> NFA::returnStateVector(string str) {
     str.pop_back();
   }
   size_t pos1 = 0;
-  size_t pos2 = str.find_first_of(',', pos1);
+  size_t pos2 = str.find_first_of(';', pos1);
   while(pos2 != string::npos) {
     vec.push_back(str.substr(pos1,pos2 - pos1));
     pos1 = pos2 + 1;
-    pos2 = str.find_first_of(',',pos1);
+    pos2 = str.find_first_of(';',pos1);
   }
   str = str.substr(pos1, str.length() - pos1);
   vec.push_back(str);
@@ -337,6 +320,8 @@ vector<string> NFA::returnStateVector(string str) {
   return vec;
 }
 
+//Function finds out where you can transition from a set of multiple states (in the vector), from a
+//single input character. The result is stored in the DFA transition function.
 void NFA::findDestinations(vector<string> vec) {
   for (unsigned int i = 0; i < alphabet.size(); i++) {
     vector<string> destinationStates;
@@ -359,7 +344,7 @@ void NFA::findDestinations(vector<string> vec) {
       continue;
     }
     for (unsigned int k = 0; k < destinationStates.size(); k++) {
-      copyIntoVector(destinationStates, epsilon[destinationStates[i]]);
+      copyIntoVector(destinationStates, epsilon[destinationStates[k]]);
     }
 
     string desStateStr = returnString(destinationStates);
@@ -370,8 +355,9 @@ void NFA::findDestinations(vector<string> vec) {
   }
 }
 
+//function writes the newly created DFA to a file named DFA-(input file name)
 void NFA::writeDFA() {
-  outputFileName = "DFA" + FAFileName;
+  outputFileName = "DFA-" + FAFileName;
   ofstream DFAFile;
   DFAFile.open(outputFileName.c_str());
 
@@ -427,14 +413,13 @@ void NFA::writeDFA() {
   }
 }
 
+//function finds out which states of the DFA are endstates
 void NFA::findEndStates() {
-
 
   for (unsigned int i = 0; i < DFAStates.size(); i++) {
     if (DFAStates[i] == "TrapState") {
       continue;
     }
-    //bool endState = false;
     vector<string> states = returnStateVector(DFAStates[i]);
     for (unsigned int j = 0; j < NFAEndStates.size(); j++) {
       if (inVector(NFAEndStates[j], states)) {
@@ -443,27 +428,4 @@ void NFA::findEndStates() {
       }
     }
   }
-    //bool endstate = false;
-
-
-
-
-/*
-  for (unsigned int k = 0; k < destinationStates.size(); k++) {
-    try {
-      endstate = NFAEndStates.at(destinationStates[k]);
-    }
-    catch (const out_of_range oor) {
-      continue;
-    }
-    if (endstate) {
-      if (!inVector(desStateStr, DFAEndStates)) {
-        DFAEndStates.push_back(desStateStr);
-      }
-      break;
-    }
-
-  }
-  */
-
 }

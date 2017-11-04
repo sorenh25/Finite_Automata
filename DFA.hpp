@@ -1,5 +1,5 @@
+//Class definition of the DFA class
 #include <string>
-//#include <unordered_map>
 #include <map>
 #include <utility>
 #include <vector>
@@ -9,18 +9,16 @@ class DFA {
 public:
   DFA(std::string, std::string);
   ~DFA();
-  void readDFA();
-  void runInput();
+  void readDFA(); //function to read the DFA
+  void runInput(); //function to run input against the DFA.
+
+private:
   bool readInputString(std::ifstream& InputFile);
   void testInputString();
-
   bool validInput();
   bool isAcceptState();
-
   void printDFA();
 
-
-//private:
   std::string FAFileName;
   std::string inputFileName;
   std::string outputFileName;
@@ -33,8 +31,8 @@ public:
   std::vector<std::string> states;
   std::vector<std::string> rules;
   std::string startState;
-  std::map<std::string, bool> endStates; //use at() operator to avoid default behaviour of []. at returns std::out_of_range is key is not found
+  std::map<std::string, bool> endStates;
 
-  std::map<std::pair<std::string, char>, std::pair<std::string, int>> transitionFunction;
+  std::map<std::pair<std::string, char>, std::pair<std::string, int>> transitionFunction; //map used for transition function
 
 };
