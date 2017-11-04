@@ -1,0 +1,120 @@
+String: a
+1,6,q13,a,q13
+Accepted
+String: baa
+1,7,q13,b,q2
+2,2,q2,a,q23
+3,8,q23,a,q123
+Accepted
+String: baba
+1,7,q13,b,q2
+2,2,q2,a,q23
+3,9,q23,b,q3
+4,4,q3,a,q13
+Accepted
+String: ababa
+1,6,q13,a,q13
+2,7,q13,b,q2
+3,2,q2,a,q23
+4,9,q23,b,q3
+5,4,q3,a,q13
+Accepted
+String: aaabbaaa
+1,6,q13,a,q13
+2,6,q13,a,q13
+3,6,q13,a,q13
+4,7,q13,b,q2
+5,3,q2,b,q3
+6,4,q3,a,q13
+7,6,q13,a,q13
+8,6,q13,a,q13
+Accepted
+String: ababaaa
+1,6,q13,a,q13
+2,7,q13,b,q2
+3,2,q2,a,q23
+4,9,q23,b,q3
+5,4,q3,a,q13
+6,6,q13,a,q13
+7,6,q13,a,q13
+Accepted
+String: ababaabaabaaa
+1,6,q13,a,q13
+2,7,q13,b,q2
+3,2,q2,a,q23
+4,9,q23,b,q3
+5,4,q3,a,q13
+6,6,q13,a,q13
+7,7,q13,b,q2
+8,2,q2,a,q23
+9,8,q23,a,q123
+10,11,q123,b,q23
+11,8,q23,a,q123
+12,10,q123,a,q123
+13,10,q123,a,q123
+Accepted
+String: ba
+1,7,q13,b,q2
+2,2,q2,a,q23
+Rejected
+String: bb
+1,7,q13,b,q2
+2,3,q2,b,q3
+Rejected
+String: bbbb
+1,7,q13,b,q2
+2,3,q2,b,q3
+3,5,q3,b,q
+4,1,q,b,q
+Rejected
+String: babbbab
+1,7,q13,b,q2
+2,2,q2,a,q23
+3,9,q23,b,q3
+4,5,q3,b,q
+5,1,q,b,q
+6,0,q,a,q
+7,1,q,b,q
+Rejected
+String: bab
+1,7,q13,b,q2
+2,2,q2,a,q23
+3,9,q23,b,q3
+Rejected
+String: baaab
+1,7,q13,b,q2
+2,2,q2,a,q23
+3,8,q23,a,q123
+4,10,q123,a,q123
+5,11,q123,b,q23
+Rejected
+String: bbb
+1,7,q13,b,q2
+2,3,q2,b,q3
+3,5,q3,b,q
+Rejected
+String: baaabbbbbbbbabbaabbaaab
+1,7,q13,b,q2
+2,2,q2,a,q23
+3,8,q23,a,q123
+4,10,q123,a,q123
+5,11,q123,b,q23
+6,9,q23,b,q3
+7,5,q3,b,q
+8,1,q,b,q
+9,1,q,b,q
+10,1,q,b,q
+11,1,q,b,q
+12,1,q,b,q
+13,0,q,a,q
+14,1,q,b,q
+15,1,q,b,q
+16,0,q,a,q
+17,0,q,a,q
+18,1,q,b,q
+19,1,q,b,q
+20,0,q,a,q
+21,0,q,a,q
+22,0,q,a,q
+23,1,q,b,q
+Rejected

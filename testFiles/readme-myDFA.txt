@@ -1,0 +1,1 @@
+1)	I designed the myDFA.txt machine. It accepts any string where the characters (digits 0-9) add up to 0 in Z/5. To test I basically just created a bunch of lines. Those where the sum is divisible by 5 are accepted and those that are not divisible by 5 are rejected. So I just created a few of each. The associated test files are called myDFA-Accept.txt and myDFA-Reject.txt

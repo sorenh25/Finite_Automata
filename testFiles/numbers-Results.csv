@@ -1,0 +1,29 @@
+String: +123
+1,0,q1,+,q2
+2,13,q2,1,q6
+Rejected
+String: 543003
+Rejected
+String: 0.123
+Rejected
+String: -1.002E4099
+1,1,q1,-,q2
+2,13,q2,1,q6
+3,45,q6,.,q7
+4,46,q7,0,q7
+5,46,q7,0,q7
+6,48,q7,2,q7
+7,56,q7,E,q8
+8,60,q8,4,q9
+9,66,q9,0,q9
+10,75,q9,9,q9
+11,75,q9,9,q9
+Accepted
+String: E2
+Rejected
+String: 000
+Rejected
+String: 111.E
+Rejected
+String: 22.0E5
+Rejected

@@ -1,0 +1,1 @@
+The other machine I designed is an NFA that accepts strings that end 001 or 110. To test I just made a bunch of strings that either satisfied or did not satisfy those two conditions. The machine is called myNFA.txt. The converted DFA version is called DFA-myNFA.txt. The two set of test files are called DFA-myNFA-Accept.txt and DFA-myNFA.Reject.txt.
